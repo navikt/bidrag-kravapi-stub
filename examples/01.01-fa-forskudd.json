@@ -1,0 +1,53 @@
+{
+  "_comment": "Vedtak om forskudd fattes for første gang 18.03.2022. Vedtaket fattes etter påløp for april har gått, 04.03.2022, så perioden 2022-04 er inkludert i overføringen.",
+  "konteringer": [
+    {
+      "transaksjonskode": "A1",
+      "type": "NY",
+      "gjelderIdent": "15878598161",
+      "kravhaverIdent": "14871298182",
+      "mottakerIdent": "15878598161",
+      "skyldnerIdent": "80000345435",
+      "belop": 1710,
+      "valuta": "NOK",
+      "periode": "2022-02",
+      "vedtaksdato": "2022-02-18",
+      "saksbehandlerId": "a123456",
+      "attestantId": "a123456",
+      "fagsystemId": "2201234",
+      "delytelsesId": "123456788"
+    },
+    {
+      "transaksjonskode": "A1",
+      "type": "NY",
+      "gjelderIdent": "15878598161",
+      "kravhaverIdent": "14871298182",
+      "mottakerIdent": "15878598161",
+      "skyldnerIdent": "80000345435",
+      "belop": 1710,
+      "valuta": "NOK",
+      "periode": "2022-03",
+      "vedtaksdato": "2022-02-18",
+      "saksbehandlerId": "a123456",
+      "attestantId": "a123456",
+      "fagsystemId": "2201234",
+      "delytelsesId": "123456788"
+    },
+    {
+      "transaksjonskode": "A1",
+      "type": "NY",
+      "gjelderIdent": "15878598161",
+      "kravhaverIdent": "14871298182",
+      "mottakerIdent": "15878598161",
+      "skyldnerIdent": "80000345435",
+      "belop": 1710,
+      "valuta": "NOK",
+      "periode": "2022-04",
+      "vedtaksdato": "2022-02-18",
+      "saksbehandlerId": "a123456",
+      "attestantId": "a123456",
+      "fagsystemId": "2201234",
+      "delytelsesId": "123456788"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "konteringer": [
+    {
+      "transaksjonskode": "G3",
+      "type": "ENDRING",
+      "gebyrRolle": "BIDRAGSPLIKTIG",
+      "gjelderIdent": "15878598161",
+      "kravhaverIdent": "80000345435",
+      "mottakerIdent": "80000345435",
+      "skyldnerIdent": "28848596401",
+      "belop": 1223,
+      "valuta": "NOK",
+      "periode": "2022-03",
+      "vedtaksdato": "2022-03-18",
+      "saksbehandlerId": "a123456",
+      "attestantId": "a123456",
+      "fagsystemId": "2201234",
+      "delytelsesId": "123456791"
+    },
+    {
+      "transaksjonskode": "G1",
+      "type": "ENDRING",
+      "gebyrRolle": "BIDRAGSPLIKTIG",
+      "gjelderIdent": "15878598161",
+      "kravhaverIdent": "80000345435",
+      "mottakerIdent": "80000345435",
+      "skyldnerIdent": "28848596401",
+      "belop": 1223,
+      "valuta": "NOK",
+      "periode": "2022-03",
+      "vedtaksdato": "2022-03-18",
+      "saksbehandlerId": "a123456",
+      "attestantId": "a123456",
+      "fagsystemId": "2201234",
+      "delytelsesId": "123456792"
+    }
+  ]
+}
