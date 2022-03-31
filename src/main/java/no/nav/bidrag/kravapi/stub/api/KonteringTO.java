@@ -41,7 +41,7 @@ public class KonteringTO {
     @Schema(description = "Angir om det er en ny transaksjon eller en endring.", example = "NY", required = true)
     private Konteringstype type;
 
-    @Schema(description = "Dersom konteringen representerer et justert beløp settes dette feltet. Justeringstypene er INDEKSREGULERING og ALDERSJUSTERING. Dersom konteringen ikke gjelder en av de automatiske justeringstypene blir ikke feltet benyttet. For blant annet Jackson deserialisering i Java gir dette en NULL-verdi for feltet.",
+    @Schema(description = "Dersom konteringen representerer et justert beløp settes dette feltet. Justeringstypene er INDEKSREGULERING og ALDERSJUSTERING. Dersom konteringen ikke gjelder en av de automatiske justeringstypene blir ikke feltet benyttet. For blant annet Jackson deserialisering i Java gir dette en NULL-verdi for feltet. Feltet settes kun for første måned med justert beløp.",
             example = "INDEKSREULERING",
             required = false)
     private Justeringstype justering;

@@ -1,0 +1,401 @@
+openapi: 3.0.1
+info:
+  title: Bidragskrav
+  description: >-
+    Grensesnitt for overføring av krav/transaksjoner mellom bidragsområdet og
+    Elin/Navi.
+  contact:
+    name: NAV - Team Bidrag
+    url: https://github.com/navikt/bidrag-kravapi-stub
+  version: '0.1'
+servers:
+  - url: http://localhost:8083
+    description: Generated server url
+paths:
+  /api/krav:
+    post:
+      tags:
+        - krav-controller
+      summary: Sende krav
+      description: >-
+        Operasjon for å levere krav fra NAV til regnskapet hos Skatteetaten. Et
+        krav består av en liste med konteringer. Det forventes at disse
+        konteringen behandles samlet. Det vil si at hvis én av konteringene
+        feiler, skal ingen av konteringene i kravet benyttes.
+
+
+        Dersom et krav feiler kan det forsøkes overført på nytt gjentatte ganger
+        inntil kravet er overført.Krav som gjelder samme fagsak må leveres i
+        korrekt rekkefølge. Feiler et krav i en sak, skal ikke senere krav i
+        samme sak overføres. Senere krav i andre saker kan overføres, selv om
+        noen av partene fra den feilende fagsaken er involvert.
+
+
+        TODO: Det forventes at et krav alltid inneholder de samme konteringene??
+        Dersom et nytt vedtak fører til et nytt krav som venter på et tidligere
+        feilende krav, skal ikke konteringene fra det seneste kravet slås sammen
+        med det ventende kravet.
+
+
+        NAV har ansvar for å manuelt følge opp krav som ved flere forsøk ikke
+        kan overføres, og vil løse opp i problemet i samarbeid med Skatteetaten.
+
+
+        Ved månedlig påløp skal ikke dette grensesnittet benyttes. Tilsvarende
+        krav legges i stedet inn i en fil som overføres til Skatteetaten gjennom
+        filslusa.
+
+
+        TODO: Formatet på påløpsfilen skal være tilsvarende det nye
+        grensesnittet, men hvor hvert krav legges inn på egen linje. Alternativt
+        kan gammelt xml-format benyttes, men uten kontaktinformasjon (br20,
+        br30, br40 og br50).
+      operationId: lagreKrav
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Krav'
+            examples:
+              Førstegangsfastsettelse bidrag:
+                description: >-
+                  3 perioder med bidrag og gebyr til begge parter. DelytelsesId
+                  er satt til det samme for alle periodene av bidraget. For
+                  gebyrkonteringene angir gebyrRolle om gebyret gjelder
+                  bidragspliktig eller bidragsmottaker. Gebyrlinjene har
+                  forskjellig delytelsesId. Tekst-feltet er kun utfyllt for
+                  bidragskonteringene.
+                value:
+                  konteringer:
+                    - transaksjonskode: B1
+                      type: NY
+                      gjelderIdent: '15878598161'
+                      kravhaverIdent: '14871298182'
+                      mottakerIdent: '15878598161'
+                      skyldnerIdent: '28848596401'
+                      belop: 2000
+                      valuta: NOK
+                      periode: 2022-02
+                      vedtaksdato: '2022-03-18'
+                      saksbehandlerId: a123456
+                      attestantId: a123456
+                      tekst: VII W → 550 → 50 /11
+                      fagsystemId: '2201234'
+                      delytelsesId: '123456789'
+                    - transaksjonskode: B1
+                      type: NY
+                      gjelderIdent: '15878598161'
+                      kravhaverIdent: '14871298182'
+                      mottakerIdent: '15878598161'
+                      skyldnerIdent: '28848596401'
+                      belop: 2000
+                      valuta: NOK
+                      periode: 2022-03
+                      vedtaksdato: '2022-03-18'
+                      saksbehandlerId: a123456
+                      attestantId: a123456
+                      tekst: VII W → 550 → 50 /11
+                      fagsystemId: '2201234'
+                      delytelsesId: '123456789'
+                    - transaksjonskode: B1
+                      type: NY
+                      gjelderIdent: '15878598161'
+                      kravhaverIdent: '14871298182'
+                      mottakerIdent: '15878598161'
+                      skyldnerIdent: '28848596401'
+                      belop: 2000
+                      valuta: NOK
+                      periode: 2022-04
+                      vedtaksdato: '2022-03-18'
+                      saksbehandlerId: a123456
+                      attestantId: a123456
+                      tekst: VII W → 550 → 50 /11
+                      fagsystemId: '2201234'
+                      delytelsesId: '123456789'
+                    - transaksjonskode: G1
+                      type: NY
+                      gebyrRolle: BIDRAGSMOTTAKER
+                      gjelderIdent: '15878598161'
+                      kravhaverIdent: '80000345435'
+                      mottakerIdent: '80000345435'
+                      skyldnerIdent: '15878598161'
+                      belop: 1223
+                      valuta: NOK
+                      periode: 2022-03
+                      vedtaksdato: '2022-03-18'
+                      saksbehandlerId: a123456
+                      attestantId: a123456
+                      fagsystemId: '2201234'
+                      delytelsesId: '123456790'
+                    - transaksjonskode: G1
+                      type: NY
+                      gebyrRolle: BIDRAGSPLIKTIG
+                      gjelderIdent: '15878598161'
+                      kravhaverIdent: '80000345435'
+                      mottakerIdent: '80000345435'
+                      skyldnerIdent: '28848596401'
+                      belop: 1223
+                      valuta: NOK
+                      periode: 2022-03
+                      vedtaksdato: '2022-03-18'
+                      saksbehandlerId: a123456
+                      attestantId: a123456
+                      fagsystemId: '2201234'
+                      delytelsesId: '123456791'
+              Forskudd - førstegangsvedtak:
+                description: >-
+                  Vedtak om forskudd fattes for første gang 18.03.2022. Vedtaket
+                  fattes etter påløp for april har gått, 04.03.2022, så perioden
+                  2022-04 er inkludert i overføringen.
+                externalValue: >-
+                  https://raw.githubusercontent.com/navikt/bidrag-kravapi-stub/main/examples/01.01-fa-forskudd.json
+              Forskudd - endring:
+                description: >-
+                  Det blir fattet nytt vedtak som reduserer forskuddet til
+                  ordinær sats fra 01.03.2022. Dermed korrigeres beløpet bort
+                  med A3 i periodene 2022-03 og 2022-04. Vedtaksdato blir satt
+                  til da endrinen ble utført, 27.03.2022, med delytelsesid
+                  hentes fra det første vedtaket. Beløpet for A3-konteringene er
+                  negative som betyr at de er fradrag.
+                externalValue: >-
+                  https://raw.githubusercontent.com/navikt/bidrag-kravapi-stub/main/examples/01.02-en-forskudd.json
+              Bidrag - førstegangsvedtak:
+                description: >-
+                  Førstegangsfastsettelse for barnebidrag fra 01.03.2022, med
+                  utlandsreferanse.
+                externalValue: >-
+                  https://raw.githubusercontent.com/navikt/bidrag-kravapi-stub/main/examples/02.01-fa-bidrag.json
+              Bidrag - BP klager på gebyr:
+                description: Bidrag - BP klager på gebyr
+                externalValue: >-
+                  https://raw.githubusercontent.com/navikt/bidrag-kravapi-stub/main/examples/02.02-kl-gebyr-bp.json
+      responses:
+        '200':
+          description: Alle konteringene i kravet er oppdatert OK. Responsen har tom body.
+          content:
+            application/json: {}
+        '400':
+          description: >-
+            Dersom én av konteringene ikke går gjennom validering forkastes alle
+            konteringene i kravet og en liste over konteringer som har feilet
+            returneres, sammen med informasjon om hva som er feil.
+
+
+            Det er ingen garanti for at konteringer som ikke kommer med på
+            listen over feilede konteringer er feilfrie.
+          content:
+            application/json: {}
+        '401':
+          description: Dersom klienten ikke er autentisert.
+        '403':
+          description: Dersom klienten ikke har tilgang.
+components:
+  schemas:
+    Kontering:
+      required:
+        - attestantId
+        - belop
+        - delytelsesId
+        - fagsystemId
+        - gjelderIdent
+        - kravhaverIdent
+        - mottakerIdent
+        - periode
+        - saksbehandlerId
+        - skyldnerIdent
+        - transaksjonskode
+        - type
+        - valuta
+        - vedtaksdato
+      type: object
+      properties:
+        transaksjonskode:
+          type: string
+          description: >
+            Type transaksjon.
+
+
+            Gyldige transaksjonskoder er:
+
+            | Kode  | Korreksjonskode |
+            Beskrivelse                                |
+
+            |-------|-----------------|--------------------------------------------|
+
+            | A1    | A3              |
+            Bidragsforskudd                            |
+
+            | B1    | B3              | Underholdsbidrag (m/u
+            tilleggsbidrag)      |
+
+            | D1    | D3              |
+            18årsbidrag                                |
+
+            | E1    | E3              | Bidrag til særlige utgifter
+            (særtilskudd)  |
+
+            | F1    | F3              |
+            Ekrefellebidrag                            |
+
+            | G1    | G3              |
+            Gebyr                                      |
+
+            | H1    | H3              |
+            Tilbakekreving                             |
+
+            | I1    |                 |
+            Motregning                                 |
+
+            | K1    |                 |
+            Ettergivelse                               |
+
+            | K2    |                 | Direkte oppgjør (innbetalt
+            beløp)          |
+
+            | K3    |                 | Tilbakekreving
+            ettergivelse                |
+          example: B1
+        type:
+          type: string
+          description: >-
+            TODO: Konteringstypen er NY for nye konteringer. Dersom en kontering
+            skal reverseres benyttes ENDRING for B3-konteringen og for alle
+            påfølgende B1-konteringer.
+          example: NY
+          enum:
+            - NY
+            - ENDRING
+        justering:
+          type: string
+          description: >-
+            Dersom konteringen representerer et justert beløp settes dette
+            feltet. Justeringstypene er INDEKSREGULERING og ALDERSJUSTERING.
+            Dersom konteringen ikke gjelder en av de automatiske
+            justeringstypene blir ikke feltet benyttet. For blant annet Jackson
+            deserialisering i Java gir dette en NULL-verdi for feltet. Feltet
+            settes kun for første måned med justert beløp.
+          example: INDEKSREULERING
+          enum:
+            - INDEKSREGULERING
+            - ALDERSJUSTERING
+        gebyrRolle:
+          type: string
+          description: >-
+            Dersom konteringen gjelder gebyr må feltet settes for å angi om det
+            gjelder gebyr for bidragsmottaker eller bidragspliktig. Dersom
+            konteringen ikke gjelder gebyr (G1 eller G3) blir ikke feltet
+            gebyrRolle benyttet.
+          nullable: true
+          enum:
+            - BIDRAGSMOTTAKER
+            - BIDRAGSPLIKTIG
+        gjelderIdent:
+          type: string
+          description: Personident (FNR/DNR/BNR/NPID) til bidragsmottaker i saken.
+          example: '15878598161'
+        kravhaverIdent:
+          type: string
+          description: >-
+            Personident (FNR/DNR/BNR/NPID) eller aktoernummer
+            (TSS-ident/samhandler) til kravhaver.
+
+
+            TODO: Angis kravhaver alltid? Også for f.eks gebyr?
+          example: '14871298182'
+        mottakerIdent:
+          type: string
+          description: >-
+            Personident (FNR/DNR/BNR/NPID) eller aktoernummer
+            (TSS-ident/samhandler) til mottaker av kravet.
+          example: '15878598161'
+        skyldnerIdent:
+          type: string
+          description: >-
+            Personident (FNR/DNR/BNR/NPID) eller aktoernummer
+            (TSS-ident/samhandler) til skyldner. For Bidrag er dette BP i saken.
+            For Forskudd er det NAV.
+          example: '28848596401'
+        belop:
+          type: integer
+          description: >-
+            Konteringens beløp. Positive beløp og 0 regnes som tillegg, negative
+            beløp som fradrag.
+          format: int32
+          example: 2000
+        valuta:
+          type: string
+          description: Valutakoden for beløpet.
+          example: NOK
+        periode:
+          type: string
+          description: Angir hvilken periode (måned og år) konteringen gjelder.
+          format: yyyy-mm
+          example: 2022-04
+        vedtaksdato:
+          type: string
+          description: Datoen vedtaket er fattet
+          format: date
+          example: '2022-03-18'
+        saksbehandlerId:
+          type: string
+          description: NAVs brukerid for saksbehandler som har fattet vedtaket
+          example: a123456
+        attestantId:
+          type: string
+          description: >-
+            NAVs brukerid for saksbehandler som har attestert vedtaket
+            (sannsynligvis samme som saksbehandlerId over).
+          example: a123456
+        tekst:
+          type: string
+          description: >-
+            Felt hvor utlandsavdelingen legger inn referansenummer (ffu-ref).
+            Dette er et fritekstfelt som kan inneholde spesialtegn.
+
+
+            TODO: Bedre navn på feltet? Hva blir riktig regnskapsmessig?
+          example: VII W → 450 → 40 /11
+        fagsystemId:
+          type: string
+          description: |-
+            Bidragssakens saksnummer.
+
+            TODO: Integer, ikke String??
+          example: '2201234'
+        delytelsesId:
+          type: string
+          description: >-
+            Unik referanse til perioden i vedtaket. I bidragssaken kan en
+            periode strekke over flere måneder, og samme referanse blir da
+            benyttet for alle månedene. Samme referanse kan ikke benyttes to
+            ganger for samme transaksjonskode i samme måned. (TODO: Med mindre
+            kontigeringkoden er endring??)
+
+
+            TODO: Integer, ikke String?
+          example: '123456789'
+      description: >-
+        En kontering angir hvor mye som skal betales av skyldner til mottaker på
+        vegne av kravhaver.
+
+
+        Konteringen kan unikt identifiseres med kombinasjonen transaksjonskode,
+        delytelsesId og periode. Det forutsettes at delytelsesid'n er unik også
+        på tvers av fagsystemid'er.
+
+
+        Personidenter for gjelderIdent, kravhaverIdent, mottakerIdent og
+        skyldnerIdent angis med enten FNR, DNR, BNR eller NPID.Aktoernummer kan
+        benyttes i kravhaverIdent, mottakerIdent og skyldnerIdent. Aktoernummere
+        er elleve siffer og starter med enten 8 eller 9.
+    Krav:
+      required:
+        - konteringer
+      type: object
+      properties:
+        konteringer:
+          type: array
+          description: En liste med konteringene i kravet.
+          items:
+            $ref: '#/components/schemas/Kontering'
+      description: 'Et krav består av en liste med konteringer. '

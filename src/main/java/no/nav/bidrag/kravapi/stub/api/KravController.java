@@ -148,7 +148,22 @@ public class KravController {
                                                     + "      \"delytelsesId\": \"123456791\"\r\n"
                                                     + "    }\r\n"
                                                     + "  ]\r\n"
-                                                    + "}")
+                                                    + "}"),
+                                    @ExampleObject(
+                                            name = "Forskudd - førstegangsvedtak",
+                                            description = "Vedtak om forskudd fattes for første gang 18.03.2022. Vedtaket fattes etter påløp for april har gått, 04.03.2022, så perioden 2022-04 er inkludert i overføringen.",
+                                            externalValue = "https://raw.githubusercontent.com/navikt/bidrag-kravapi-stub/main/examples/01.01-fa-forskudd.json"),
+                                    @ExampleObject(
+                                            name = "Forskudd - endring",
+                                            description = "Det blir fattet nytt vedtak som reduserer forskuddet til ordinær sats fra 01.03.2022. Dermed korrigeres beløpet bort med A3 i periodene 2022-03 og 2022-04. Vedtaksdato blir satt til da endrinen ble utført, 27.03.2022, med delytelsesid hentes fra det første vedtaket. Beløpet for A3-konteringene er negative som betyr at de er fradrag.",
+                                            externalValue = "https://raw.githubusercontent.com/navikt/bidrag-kravapi-stub/main/examples/01.02-en-forskudd.json"),
+                                    @ExampleObject(
+                                            name = "Bidrag - førstegangsvedtak",
+                                            description = "Førstegangsfastsettelse for barnebidrag fra 01.03.2022, med utlandsreferanse.",
+                                            externalValue = "https://raw.githubusercontent.com/navikt/bidrag-kravapi-stub/main/examples/02.01-fa-bidrag.json"),
+                                    @ExampleObject(
+                                            name = "Bidrag - BP klager på gebyr",
+                                            externalValue = "https://raw.githubusercontent.com/navikt/bidrag-kravapi-stub/main/examples/02.02-kl-gebyr-bp.json"),
                             })))
     @PostMapping("/krav")
     public ResponseEntity<Void> lagreKrav(KravTO krav) {
