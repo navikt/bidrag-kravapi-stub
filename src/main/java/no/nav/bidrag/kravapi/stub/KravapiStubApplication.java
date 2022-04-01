@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(
         title = "Bidragskrav",
-        version = "0.1",
+        version = "0.2",
         description = "Grensesnitt for overføring av krav/transaksjoner mellom bidragsområdet og Elin/Navi.",
         contact = @Contact(name = "NAV - Team Bidrag", url = "https://github.com/navikt/bidrag-kravapi-stub")))
 public class KravapiStubApplication {

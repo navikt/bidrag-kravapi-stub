@@ -16,9 +16,12 @@ import lombok.Data;
 @Data
 @Schema(name = "Kontering",
         description = "En kontering angir hvor mye som skal betales av skyldner til mottaker på vegne av kravhaver.\n\n"
-                + "Konteringen kan unikt identifiseres med kombinasjonen transaksjonskode, delytelsesId og periode. Det forutsettes at delytelsesid'n er unik også på tvers av fagsystemid'er.\n\n"
-                + "Personidenter for gjelderIdent, kravhaverIdent, mottakerIdent og skyldnerIdent angis med enten FNR, DNR, BNR eller NPID."
-                + "Aktoernummer kan benyttes i kravhaverIdent, mottakerIdent og skyldnerIdent. Aktoernummere er elleve siffer og starter med enten 8 eller 9.")
+                + "Konteringen kan unikt identifiseres med kombinasjonen transaksjonskode, delytelsesId og periode. Det forutsettes at delytelsesid'n er unik også på tvers av fagsystemid'er.\n"
+                + "\n"
+                + "Personidenter for gjelderIdent, kravhaverIdent, mottakerIdent og skyldnerIdent angis med enten FNR eller DNR. (Håndtering av BNR og NPID er uavklart.) "
+                + "Aktoernummer kan benyttes i kravhaverIdent, mottakerIdent og skyldnerIdent. Aktoernummere er elleve siffer og starter med enten 8 eller 9. \n"
+                + "\n"
+                + "I testmiljøene må Tenor-identer støttes i stedet for FNR/DNR. Disse identene har 8 eller 9 i tredje siffer.")
 public class KonteringTO {
 
     @Schema(description = "Type transaksjon.\n\n"
@@ -52,18 +55,22 @@ public class KonteringTO {
             required = false)
     private GebyrRolle gebyrRolle;
 
-    @Schema(description = "Personident (FNR/DNR/BNR/NPID) til bidragsmottaker i saken.", example = "15878598161", required = true)
+    @Schema(description = "Personident (FNR/DNR) til bidragsmottaker i bidragssaken. I saker der bidragsmottaker ikke er satt benyttes et dummynr 22222222226", example = "15878598161", required = true)
     private String gjelderIdent;
 
-    @Schema(description = "Personident (FNR/DNR/BNR/NPID) eller aktoernummer (TSS-ident/samhandler) til kravhaver.\n"
+    @Schema(description = "Personident (FNR/DNR) eller aktoernummer (TSS-ident/samhandler) til kravhaver.\n"
             + "\n"
-            + "TODO: Angis kravhaver alltid? Også for f.eks gebyr?", example = "14871298182", required = true)
+            + "Kravhaver angis ikke for gebyr.", example = "14871298182", required = false)
     private String kravhaverIdent;
 
-    @Schema(description = "Personident (FNR/DNR/BNR/NPID) eller aktoernummer (TSS-ident/samhandler) til mottaker av kravet.", example = "15878598161", required = true)
+    @Schema(description = "Personident (FNR/DNR) eller aktoernummer (TSS-ident/samhandler) til mottaker av kravet.\n"
+            + "\n"
+            + "For gebyr settes mottakerIdent til NAVs aktoernummer 80000345435.", example = "15878598161", required = true)
     private String mottakerIdent;
 
-    @Schema(description = "Personident (FNR/DNR/BNR/NPID) eller aktoernummer (TSS-ident/samhandler) til skyldner. For Bidrag er dette BP i saken. For Forskudd er det NAV.", example = "28848596401", required = true)
+    @Schema(description = "Personident (FNR/DNR) eller aktoernummer (TSS-ident/samhandler) til skyldner. For Bidrag er dette BP i saken.\n"
+            + "\n"
+            + "For forskudd settes skyldnerIdent til NAVs aktoernummer 80000345435.", example = "28848596401", required = true)
     private String skyldnerIdent;
 
     @Schema(description = "Konteringens beløp. Positive beløp og 0 regnes som tillegg, negative beløp som fradrag.", example = "2000", required = true)
@@ -82,6 +89,12 @@ public class KonteringTO {
     @Schema(description = "Datoen vedtaket er fattet", example = "2022-03-18", required = true)
     private LocalDate vedtaksdato;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Schema(description = "Datoen kravet/konteringen gjøres klart for overføring. "
+            + "For direkteoverførte online-vedtak blir datoen sannsynligvis det samme som vedtaksdato. "
+            + "For påløp blir datoen satt til dagen påløpet genereres.", example = "2022-03-18", required = true)
+    private LocalDate kjoredato;
+
     @Schema(description = "NAVs brukerid for saksbehandler som har fattet vedtaket", example = "a123456", required = true)
     private String saksbehandlerId;
 
@@ -93,19 +106,15 @@ public class KonteringTO {
             + "TODO: Bedre navn på feltet? Hva blir riktig regnskapsmessig?", example = "VII W → 450 → 40 /11", required = false)
     private String tekst;
 
-    @Schema(description = "Bidragssakens saksnummer.\n"
-            + "\n"
-            + "TODO: Integer, ikke String??", example = "2201234", required = true)
+    @Schema(description = "Bidragssakens saksnummer angitt som String.", example = "2201234", required = true)
     private String fagsystemId;
 
-    @Schema(description = "Unik referanse til perioden i vedtaket. I bidragssaken kan en periode strekke over flere måneder, og samme referanse blir da benyttet for alle månedene. Samme referanse kan ikke benyttes to ganger for samme transaksjonskode i samme måned. (TODO: Med mindre kontigeringkoden er endring??)\n"
-            + "\n"
-            + "TODO: Integer, ikke String?",
+    @Schema(description = "Unik referanse til perioden i vedtaket angitt som String. I bidragssaken kan en periode strekke over flere måneder, og samme referanse blir da benyttet for alle månedene. Samme referanse kan ikke benyttes to ganger for samme transaksjonskode i samme måned.",
             example = "123456789",
             required = true)
     private String delytelsesId;
 
-    @Schema(description = "TODO: Konteringstypen er NY for nye konteringer. Dersom en kontering skal reverseres benyttes ENDRING for B3-konteringen og for alle påfølgende B1-konteringer.")
+    @Schema(description = "Konteringstypen er NY for nye konteringer for en stønad i en periode. Deretter skal alle konteringer for samme stønad i samme periode markere ENDRING, altså B3-konteringen og for alle påfølgende B1-konteringer.")
     public static enum Konteringstype {
         NY, ENDRING;
     }

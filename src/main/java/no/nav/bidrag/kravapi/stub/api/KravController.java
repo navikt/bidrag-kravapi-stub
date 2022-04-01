@@ -22,12 +22,12 @@ public class KravController {
                     + "konteringer. Det forventes at disse konteringen behandles samlet. Det vil si at hvis én av konteringene "
                     + "feiler, skal ingen av konteringene i kravet benyttes.\n"
                     + "\n"
-                    + "Dersom et krav feiler kan det forsøkes overført på nytt gjentatte ganger inntil kravet er overført."
+                    + "Dersom et krav feiler kan det forsøkes overført på nytt gjentatte ganger inntil kravet er overført. "
                     + "Krav som gjelder samme fagsak må leveres i korrekt rekkefølge. Feiler et krav i en sak, skal ikke senere "
                     + "krav i samme sak overføres. Senere krav i andre saker kan overføres, selv om noen av partene fra den "
                     + "feilende fagsaken er involvert.\n"
                     + "\n"
-                    + "TODO: Det forventes at et krav alltid inneholder de samme konteringene?? Dersom et nytt vedtak fører til "
+                    + "Det forventes at et krav alltid inneholder de samme konteringene. Dersom et nytt vedtak fører til "
                     + "et nytt krav som venter på et tidligere feilende krav, skal ikke konteringene fra det seneste kravet slås "
                     + "sammen med det ventende kravet.\n"
                     + "\n"
@@ -37,13 +37,15 @@ public class KravController {
                     + "Ved månedlig påløp skal ikke dette grensesnittet benyttes. Tilsvarende krav legges i stedet inn i en fil "
                     + "som overføres til Skatteetaten gjennom filslusa.\n"
                     + "\n"
-                    + "TODO: Formatet på påløpsfilen skal være tilsvarende det nye grensesnittet, men hvor hvert krav legges "
-                    + "inn på egen linje. Alternativt kan gammelt xml-format benyttes, men uten kontaktinformasjon (br20, br30, "
-                    + "br40 og br50).",
+                    + "Formatet på påløpsfilen skal være tilsvarende det nye grensesnittet, men hvor hvert krav legges "
+                    + "inn på egen linje.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Alle konteringene i kravet er oppdatert OK. Responsen har tom body.",
+                            description = "Alle konteringene i kravet er oppdatert OK. Responsen har tom body.\n"
+                                    + "\n"
+                                    + "Det forventes også responskode 200 dersom kravet (og dermed konteringene) er overført tidligere. "
+                                    + "Det forventes da at kravet ignoreres slik at ikke konteringene posteres dobbelt.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
                     @ApiResponse(
                             responseCode = "401",
